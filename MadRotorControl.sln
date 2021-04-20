@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MadRotorControl", "MadRotorControl\MadRotorControl.csproj", "{47A1F225-676A-4474-BF0E-F62C060CB61B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47A1F225-676A-4474-BF0E-F62C060CB61B}.Debug|x64.ActiveCfg = Debug|x64
+		{47A1F225-676A-4474-BF0E-F62C060CB61B}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {92759F6F-5A8F-43ED-9567-5D0C6881F916}
+	EndGlobalSection
+EndGlobal
