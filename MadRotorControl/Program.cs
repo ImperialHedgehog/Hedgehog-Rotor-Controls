@@ -60,7 +60,7 @@ namespace IngameScript
         private HashSet<long> _found_block_ids; 
 
         /*****************************************************************************/
-        //                              DATA STRUCTURES
+        //                              MINOR DATA STRUCTURES
         class CommandInput
         {
             public float pitch;
@@ -87,30 +87,7 @@ namespace IngameScript
             forward_back
         }
 
-        class ArticulationJoint
-        {
-            public IMyTerminalBlock joint;
-            public ArticulationType joint_type;
-            public float pitch_sensitivity;
-            public float yaw_sensitivity;
-            public float roll_sensitivity;
-            public float up_down_sensitivity;
-            public float left_right_sensitivity;
-            public float forward_back_sensitivity;
 
-            override public string ToString()
-            {
-                string s = $"Type: {joint_type.ToString()}\n" +
-                    $"Pitch: {pitch_sensitivity}\n" +
-                    $"Yaw: {yaw_sensitivity}\n" +
-                    $"Roll: {roll_sensitivity}\n" +
-                    $"Up Down: {up_down_sensitivity}\n" +
-                    $"Left Right: {left_right_sensitivity}\n" +
-                    $"Forward Back: {forward_back_sensitivity}\n";
-                return s;
-            }
-
-        }
 
 
 
@@ -122,6 +99,8 @@ namespace IngameScript
             GeneralGetterList = new List<IMyTerminalBlock>();
             _command_groups = new List<CommandGroup>();
             _found_block_ids = null;
+
+            Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
 
         //METHOD: InitializeGroups
@@ -130,6 +109,7 @@ namespace IngameScript
             GeneralGetterList.Clear();
             _command_groups.Clear();
             ClearFoundBlocks();
+            _time_since_last_refresh = 0;
 
             List<IMyBlockGroup> groups = new List<IMyBlockGroup>();
 
@@ -157,20 +137,21 @@ namespace IngameScript
 
             foreach (CommandGroup group in _command_groups)
             {
-                if (group.IsValid && group.IsBeingControlled())
+                if (group.IsBeingControlled())
                 {
                     Runtime.UpdateFrequency |= UpdateFrequency.Once;
-                }
-
-                if (group.IsValid)
-                {
                     group.Run();
                 }
-                else
+                //TODO: Set velocities to 0 if a group is stops being controlled
+                //TODO: Add support for wheels
+
+                if (!group.IsValid)
                 {
                     LogError(group.Errors, group.Name);
                 }
-            }      
+            }
+
+            PrintDiagnostics();
         }
 
 
@@ -199,6 +180,15 @@ namespace IngameScript
         }
 
         //OUTPUT FUNCTIONS
+
+        private void PrintDiagnostics()
+        {
+            Echo($"Time Since Last Refresh: {_time_since_last_refresh:0.0}s");
+            Echo($"{_command_groups.Count} command groups detected");
+            Echo($"{_command_groups.Count(group => group.IsBeingControlled())} groups in use");
+            Echo($"{_command_groups.Count(group => !group.IsValid)} invalid groups detected");
+            Echo($"Script last ran in {Runtime.LastRunTimeMs:0.0000} ms");
+        }
         //TODO: Make a more persistent log of messages and errors
         void LogWarning(string error, string caller)
         {
